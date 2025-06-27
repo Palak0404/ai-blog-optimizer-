@@ -35,29 +35,59 @@ def generate_metadata_with_gemini(content):
     try:
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(prompt)
-        return response.text
+        title_line = next((line for line in response.splitlines() if line.lower().startswith("title:")), "")
+        desc_line = next((line for line in response.splitlines() if line.lower().startswith("description:")), "")
+        title = title_line.replace("Title:", "").strip()[:70]
+        description = desc_line.replace("Description:", "").strip()[:160]
+
+        return f"**Title:** {title}\n\n**Description:** {description}"
     except Exception as e:
         return f"Gemini error: {e}"
 
 def generate_metadata_with_t5(content):
     try:
-        summary = t5_summarizer(content[:1024],max_length=300,min_length=100,do_sample=True,early_stopping=True,no_repeat_ngram_size=2)[0]['summary_text']
-        sentences = summary.split('. ')
-        title = sentences[0].strip()[:70]
-        description = '. '.join(sentences[1:]).strip()[:160]
-        return title, description
+        summary = t5_summarizer(
+            content[:1024],
+            max_length=256,
+            min_length=100,
+            do_sample=True,
+            early_stopping=True,
+            no_repeat_ngram_size=2
+        )[0]['summary_text']
+
+        sentences = summary.strip().split('. ')
+        title = sentences[0].strip() if sentences else summary.strip()
+        description = '. '.join(sentences[1:]).strip() if len(sentences) > 1 else summary.strip()
+
+        # Apply character limits
+        return title[:70], description[:160]
     except Exception as e:
         return f"T5 error: {e}", ""
 
+
 def generate_metadata_with_bart(content):
     try:
-        summary = bart_summarizer(content[:1024],max_length=350,min_length=180,do_sample=True,top_k=50,top_p=0.95,temperature=0.9,early_stopping=False,no_repeat_ngram_size=2)[0]['summary_text']
+        summary = bart_summarizer(
+            content[:1024],
+            max_length=350,
+            min_length=180,
+            do_sample=True,
+            top_k=50,
+            top_p=0.95,
+            temperature=0.9,
+            early_stopping=False,
+            no_repeat_ngram_size=2
+        )[0]['summary_text']
+
         sentences = summary.strip().split('. ')
-        title = sentences[0].strip()[:70]
-        description = '. '.join(sentences[1:]).strip()[:160]
-        return title, description
+        title = sentences[0].strip() if sentences else summary.strip()
+        description = '. '.join(sentences[1:]).strip() if len(sentences) > 1 else summary.strip()
+
+        # Apply character limits
+        return title[:70], description[:160]
     except Exception as e:
         return f"BART error: {e}", ""
+
 
 st.set_page_config(page_title="AI Blog Optimizer")                                                   #streamlit ui
 st.title(" AI Blog Optimizer")
@@ -83,9 +113,13 @@ if url and st.button("Generate Metadata"):
             title, desc = generate_metadata_with_t5(content)
             st.markdown(f"**Title:** {title}")
             st.markdown(f"**Description:** {desc}")
+            st.markdown(f"**Title ({len(title)}/70):** {title}")
+            st.markdown(f"**Description ({len(desc)}/160):** {desc}")
 
         if model_option in ["BART-Base", "Compare All"]:
             st.markdown("## BART-Base Output")
             title, desc = generate_metadata_with_bart(content)
             st.markdown(f"**Title:** {title}")
             st.markdown(f"**Description:** {desc}")
+            st.markdown(f"**Title ({len(title)}/70):** {title}")
+            st.markdown(f"**Description ({len(desc)}/160):** {desc}")
