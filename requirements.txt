@@ -3,6 +3,5 @@ requests
 beautifulsoup4
 transformers==4.40.1
 torch==2.0.1
-python-dotenv
 google-generativeai==0.8.5
 numpy==1.26.4  
