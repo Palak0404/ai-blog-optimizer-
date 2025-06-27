@@ -4,11 +4,8 @@ from bs4 import BeautifulSoup  # type: ignore
 import google.generativeai as genai  # type: ignore
 from transformers import pipeline  # type: ignore
 import torch  # for deployment
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=st.secrets["gcp"]["GEMINI_API_KEY"])
 
 t5_summarizer = pipeline("summarization", model="t5-small", device=-1)
 bart_summarizer = pipeline("summarization", model="facebook/bart-base", device=-1)
