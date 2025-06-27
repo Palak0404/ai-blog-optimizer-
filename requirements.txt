@@ -2,6 +2,6 @@ streamlit
 requests
 beautifulsoup4
 transformers==4.40.1
-torch==2.1.0+cpu
+torch==2.1.0
 python-dotenv
 google-generativeai
