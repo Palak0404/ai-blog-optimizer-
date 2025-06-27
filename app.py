@@ -103,9 +103,9 @@ if url and st.button("Generate Metadata"):
         st.error(content)
     else:
         if model_option in ["Gemini", "Compare All"]:
-         st.markdown("##  Gemini Output")
-         gemini_text = generate_metadata_with_gemini(content)
-         st.markdown(gemini_text)
+             st.markdown("##  Gemini Output")
+             gemini_text = generate_metadata_with_gemini(content)
+             st.markdown(gemini_text)
 
         if model_option in ["T5-Small", "Compare All"]:
             st.markdown("## T5-Small Output")
