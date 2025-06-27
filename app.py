@@ -3,6 +3,7 @@ import requests  # type: ignore
 from bs4 import BeautifulSoup  # type: ignore
 import google.generativeai as genai  # type: ignore
 from transformers import pipeline  # type: ignore
+import torch # for deployment
 from dotenv import load_dotenv
 import os
 
