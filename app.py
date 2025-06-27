@@ -40,14 +40,14 @@ def generate_metadata_with_gemini(content):
         return f"Gemini error: {e}"
 
 # T5 Metadata Generator
-def generate_metadata_with_t5(content):
+def generate_metadata_with_t5(content):                                             # T5-Small
     try:
-        summary = t5_summarizer(content[:1024], max_length=320, min_length=150, do_sample=True)[0]['summary_text']
+        summary = t5_summarizer(content[:1024],max_length=320,min_length=150,do_sample=True,early_stopping=False,no_repeat_ngram_size=2)[0]['summary_text']
         sentences = [s.strip() for s in summary.strip().split('.') if s.strip()]
-        title = next((s for s in sentences if 20 < len(s) <= 70), None)
+        title = next((s for s in sentences if len(s) <= 70 and len(s) > 20), None)
         if not title and sentences:
             fallback = sentences[0][:70]
-            title = ' '.join(fallback.split(' ')[:-1])
+            title = ' '.join(fallback.split(' ')[:-1]) 
         description = ''
         for s in sentences:
             if s == title:
