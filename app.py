@@ -10,8 +10,8 @@ import os
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-t5_summarizer = pipeline("summarization", model="t5-small")
-bart_summarizer = pipeline("summarization", model="facebook/bart-base")
+t5_summarizer = pipeline("summarization", model="t5-small",device=-1)
+bart_summarizer = pipeline("summarization", model="facebook/bart-base",device=-1)
 
 HEADERS = {"User-Agent": "Mozilla/5.0", "Accept-Language": "en-US,en;q=0.9"}
 
@@ -46,20 +46,10 @@ def generate_metadata_with_gemini(content):
 
 def generate_metadata_with_t5(content):
     try:
-        summary = t5_summarizer(
-            content[:1024],
-            max_length=256,
-            min_length=100,
-            do_sample=True,
-            early_stopping=True,
-            no_repeat_ngram_size=2
-        )[0]['summary_text']
-
+        summary = t5_summarizer(content[:1024],max_length=256,min_length=100,do_sample=True,early_stopping=True,no_repeat_ngram_size=2)[0]['summary_text']
         sentences = summary.strip().split('. ')
         title = sentences[0].strip() if sentences else summary.strip()
         description = '. '.join(sentences[1:]).strip() if len(sentences) > 1 else summary.strip()
-
-        # Apply character limits
         return title[:70], description[:160]
     except Exception as e:
         return f"T5 error: {e}", ""
@@ -67,23 +57,10 @@ def generate_metadata_with_t5(content):
 
 def generate_metadata_with_bart(content):
     try:
-        summary = bart_summarizer(
-            content[:1024],
-            max_length=350,
-            min_length=180,
-            do_sample=True,
-            top_k=50,
-            top_p=0.95,
-            temperature=0.9,
-            early_stopping=False,
-            no_repeat_ngram_size=2
-        )[0]['summary_text']
-
+        summary = bart_summarizer(content[:1024],max_length=350,min_length=180,do_sample=True,top_k=50,top_p=0.95,temperature=0.9,early_stopping=False,no_repeat_ngram_size=2)[0]['summary_text']
         sentences = summary.strip().split('. ')
         title = sentences[0].strip() if sentences else summary.strip()
         description = '. '.join(sentences[1:]).strip() if len(sentences) > 1 else summary.strip()
-
-        # Apply character limits
         return title[:70], description[:160]
     except Exception as e:
         return f"BART error: {e}", ""
