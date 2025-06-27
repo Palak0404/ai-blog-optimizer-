@@ -91,7 +91,6 @@ def generate_metadata_with_bart(content):
 
 st.set_page_config(page_title="AI Blog Optimizer")                                                  # UI
 st.title("AI Blog Optimizer")
-st.markdown("Generate SEO-optimized metadata from your Shopify blog using AI models.")
 
 url = st.text_input("Enter a Shopify blog URL:")
 model_option = st.selectbox("Choose a model:", ["Gemini", "T5-Small", "BART-Base", "Compare All"])
