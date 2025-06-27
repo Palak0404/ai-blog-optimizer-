@@ -3,12 +3,11 @@ import requests  # type: ignore
 from bs4 import BeautifulSoup  # type: ignore
 import google.generativeai as genai  # type: ignore
 from transformers import pipeline  # type: ignore
-import torch  # for deployment
 
 genai.configure(api_key=st.secrets["gcp"]["GEMINI_API_KEY"])
 
-t5_summarizer = pipeline("summarization", model="t5-small", device=-1)
-bart_summarizer = pipeline("summarization", model="facebook/bart-base", device=-1)
+t5_summarizer = pipeline("summarization", model="t5-small")
+bart_summarizer = pipeline("summarization", model="facebook/bart-base")
 
 HEADERS = {"User-Agent": "Mozilla/5.0", "Accept-Language": "en-US,en;q=0.9"}
 
