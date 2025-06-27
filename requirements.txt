@@ -5,3 +5,4 @@ transformers==4.40.1
 torch==2.1.0
 python-dotenv
 google-generativeai
+numpy<2.0 
