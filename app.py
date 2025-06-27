@@ -43,8 +43,8 @@ def generate_metadata_with_t5(content):
     try:
         summary = t5_summarizer(content[:1024],max_length=300,min_length=100,do_sample=True,early_stopping=True,no_repeat_ngram_size=2)[0]['summary_text']
         sentences = summary.split('. ')
-        title = sentences[0].strip()
-        description = '. '.join(sentences[1:]).strip()
+        title = sentences[0].strip()[:70]
+        description = '. '.join(sentences[1:]).strip()[:160]
         return title, description
     except Exception as e:
         return f"T5 error: {e}", ""
@@ -53,8 +53,8 @@ def generate_metadata_with_bart(content):
     try:
         summary = bart_summarizer(content[:1024],max_length=350,min_length=180,do_sample=True,top_k=50,top_p=0.95,temperature=0.9,early_stopping=False,no_repeat_ngram_size=2)[0]['summary_text']
         sentences = summary.strip().split('. ')
-        title = sentences[0].strip()
-        description = '. '.join(sentences[1:]).strip()
+        title = sentences[0].strip()[:70]
+        description = '. '.join(sentences[1:]).strip()[:160]
         return title, description
     except Exception as e:
         return f"BART error: {e}", ""
