@@ -34,10 +34,10 @@ def generate_multiple_metadata_with_gemini(content):  # Gemini: 3 titles + 3 des
         return f"Gemini error: {e}"
 
 # Streamlit UI
-st.set_page_config(page_title="AI Blog Optimizer")
-st.title("AI Blog Optimizer")
+st.set_page_config(page_title="AI Blog Meta Generator")
+st.title("AI Blog Meta Generator")
 
-url = st.text_input("Enter a Shopify blog URL:")
+url = st.text_input("Enter a Blog URL:")
 
 if url and st.button("Generate with Gemini"):
     with st.spinner("Fetching blog content..."):
